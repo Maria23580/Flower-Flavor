@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Compras</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    header {
+        background-color: #e6d4f7;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .back-arrow {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    
+    .order-list {
+        margin: 20px 0;
+    }
+    
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e6d4f7;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+    }
+    
+    .photo-container img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+    .order-info h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .calendar-container {
+        position: relative;
+    }
+    
+    #date-input, #date-input2 {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 150px;
+        cursor: pointer;
+    }
+    
+    .calendar {
+        display: none;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 100;
+    }
+    
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .calendar-days, .calendar-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+    
+    .quantity-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .quantity-btn {
+        background-color: #b3a0e6;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #e6d4f7;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 900px;
+    }
+    
+    .payment-info, .order-summary {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .finalize-btn {
+        background-color: #b3a0e6;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .finalize-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializando calendário para o primeiro item
+        const dateInput = document.getElementById('date-input');
+        const calendar = document.getElementById('calendar');
+        const monthYear = document.getElementById('month-year');
+        const calendarBody = document.getElementById('calendar-body');
+    
+        // Função para abrir/fechar o calendário
+        dateInput.addEventListener('click', function() {
+            calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Inicializando calendário para o segundo item
+        const dateInput2 = document.getElementById('date-input2');
+        const calendar2 = document.getElementById('calendar2');
+        const monthYear2 = document.getElementById('month-year2');
+        const calendarBody2 = document.getElementById('calendar-body2');
+
+        dateInput2.addEventListener('click', function() {
+            calendar2.style.display = calendar2.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Função para atualizar o calendário
+        function updateCalendar(monthElement, calendarBody) {
+            const daysInMonth = new Date(2024, 9, 0).getDate(); // Exemplo para setembro
+            calendarBody.innerHTML = '';
+            for (let i = 1; i <= daysInMonth; i++) {
+                const day = document.createElement('div');
+                day.textContent = i;
+                calendarBody.appendChild(day);
+            }
+        }
+
+        updateCalendar(monthYear, calendarBody);
+        updateCalendar(monthYear2, calendarBody2);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentMethodSelect = document.getElementById('payment-method');
+        const creditForm = document.getElementById('credito-form');
+        const debitForm = document.getElementById('debito-form');
+        const pixForm = document.getElementById('pix-form');
+        const finalizeBtn = document.getElementById('finalize-btn');
+
+        // Função para habilitar o botão de finalizar
+        const phoneNumberInput = document.getElementById('phone-number');
+        const paymentForms = document.querySelectorAll('.payment-form input');
+
+        function toggleFinalizeButton() {
+            const isPhoneFilled = phoneNumberInput.value.trim() !== '';
+            let isPaymentFilled = true;
+
+            paymentForms.forEach((input) => {
+                if (input.closest('.payment-form').style.display !== 'none') {
+                    if (input.value.trim() === '') {
+                        isPaymentFilled = false;
+                    }
+                }
+            });
+
+            if (isPhoneFilled && isPaymentFilled) {
+                finalizeBtn.disabled = false;
+            } else {
+                finalizeBtn.disabled = true;
+            }
+        }
+
+        paymentMethodSelect.addEventListener('change', function () {
+            creditForm.style.display = 'none';
+            debitForm.style.display = 'none';
+            pixForm.style.display = 'none';
+
+            if (this.value === 'credito') {
+                creditForm.style.display = 'block';
+            } else if (this.value === 'debito') {
+                debitForm.style.display = 'block';
+            } else if (this.value === 'pix') {
+                pixForm.style.display = 'block';
+            }
+
+            toggleFinalizeButton();
+        });
+
+        phoneNumberInput.addEventListener('input', toggleFinalizeButton);
+        paymentForms.forEach((input) => {
+            input.addEventListener('input', toggleFinalizeButton);
+        });
+    });
+</script>
+<body>
+    <div class="container">
+        <header>
+            <button class="back-arrow" onclick="window.history.back();">&#9664; Voltar</button>
+            <h2 id="titulo">Minhas Compras:</h2>
+        </header>
+
+        <section class="order-list">
+            <!-- Produto A -->
+            <div class="order-item">
+                <div class="photo-container">
+                    <img src="imagens/11.webp" alt="Foto do Produto 1" class="photo">
+                </div>
+                <div class="order-info">
+                    <h3>Cesta Elegante</h3>
+                    <p>R$146.60</p>
+                </div>
+                <div class="calendar-container"> 
+                    <input type="text" id="date-input" placeholder="Selecione uma data" readonly>
+                    <div id="calendar" class="calendar">
+                        <div class="calendar-header">
+                            <span id="month-year">Setembro 2024</span>
+                        </div>
+                        <div class="calendar-days">
+                            <div>Dom</div><div>Seg</div><div>Ter</div>
+                            <div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                        </div>
+                        <div id="calendar-body" class="calendar-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="quantity-container">
+                    <button class="quantity-btn">+</button>
+                    <span class="quantity">1</span>
+                    <button class="quantity-btn">-</button>
+                </div>
+            </div>
+
+            <!-- Produto B -->
+            <div class="order-item">
+                <div class="photo-container">
+                    <img src="imagens/1.jpg" alt="Foto do Produto 2" class="photo">
+                </div>
+                <div class="order-info">
+                    <h3>Cesta Palha Trançada</h3>
+                    <p>R$95.99</p>
+                </div>
+                <div class="calendar-container">
+                    <input type="text" id="date-input2" placeholder="Selecione uma data" readonly>
+                    <div id="calendar2" class="calendar">
+                        <div class="calendar-header">
+                            <span id="month-year2">Setembro 2024</span>
+                        </div>
+                        <div class="calendar-days">
+                            <div>Dom</div><div>Seg</div><div>Ter</div>
+                            <div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                        </div>
+                        <div id="calendar-body2" class="calendar-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="quantity-container">
+                    <button class="quantity-btn">+</button>
+                    <span class="quantity">1</span>
+                    <button class="quantity-btn">-</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="payment-info">
+                <label for="payment-method">* Forma de Pagamento:</label>
+                <select id="payment-method">
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="credito">Cartão de Crédito</option>
+                    <option value="debito">Cartão de Débito</option>
+                    <option value="pix">PIX</option>
+                </select>
+
+                <div id="payment-details">
+                    <!-- Formulário de Crédito -->
+                    <div id="credito-form" class="payment-form" style="display: none;">
+                        <label for="credit-card-number">Número do Cartão:</label>
+                        <input type="text" id="credit-card-number" placeholder="Digite o número do cartão" required>
+
+                        <label for="credit-card-expiry">Data de Expiração:</label>
+                        <input type="text" id="credit-card-expiry" placeholder="MM/AA" required>
+
+                        <label for="credit-card-cvc">CVC:</label>
+                        <input type="text" id="credit-card-cvc" placeholder="CVC" required>
+                    </div>
+
+                    <!-- Formulário de Débito -->
+                    <div id="debito-form" class="payment-form" style="display: none;">
+                        <label for="debit-card-number">Número do Cartão:</label>
+                        <input type="text" id="debit-card-number" placeholder="Digite o número do cartão" required>
+
+                        <label for="debit-card-expiry">Data de Expiração:</label>
+                        <input type="text" id="debit-card-expiry" placeholder="MM/AA" required>
+
+                        <label for="debit-card-cvc">CVC:</label>
+                        <input type="text" id="debit-card-cvc" placeholder="CVC" required>
+                    </div>
+
+                    <!-- Formulário de PIX -->
+                    <div id="pix-form" class="payment-form" style="display: none;">
+                        <label for="pix-key">Chave PIX:</label>
+                        <input type="text" id="pix-key" placeholder="Digite sua chave PIX" required>
+                    </div>
+                </div>
+
+                <label for="phone-number">* Telefone:</label>
+                <input type="text" id="phone-number" placeholder="Digite seu telefone" required>
+            </div>
+
+            <div class="order-summary">
+                <span>Total do Pedido: </span>
+                <span class="total-amount">R$00,00</span>
+            </div>
+
+            <a href="vitrine.html"><button class="finalize-btn" id="finalize-btn" disabled> Finalizar a Compra</button></a>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cestas Prontas</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2e9ff;
+        }
+
+        header {
+            background-color: #d4a5e4;
+            padding: 25px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu {
+            width: 200px;
+            background-color: #e0c2f7;
+            border:solid#6a4586;
+            padding: 10px;
+            border-radius: 80px;
+            margin-left: 100px;
+            cursor: pointer;
+        }
+
+        .top-bar button:hover {
+            background-color: #d4a5e4;
+        }
+
+
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            margin: 15px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 16px;
+            font-weight: bold;
+            color: #6c6c6c;
+        }
+
+        #user-icon
+        {
+            border:solid#6a4586;
+            padding: 10px;
+            margin-left: 100px;
+            cursor: pointer;
+            border-radius: 80px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <nav>
+                <a href="#"><button class="menu">Filtros</button></a>
+                <a href="vitrine.html"><button class="menu">Vitrine</button></a>
+                <a href="personalizadas.html"><button class="menu">Personalize</button></a>
+                <a href="minhas_compras.html"><button class="menu">Minhas Compras</button></a>
+                <a href="Meus_Pedidos.html"><button class="menu">Meus Pedidos</button></a>
+                <a href="cadastro.html"><button id="user-icon">👤</button></a>
+            </nav>
+        </div>        
+    </header>
+    <main>
+        <h1>Cestas Prontas</h1>
+        <div class="cards-container">
+            <div class="card">
+                <img src="imagens/1.jpg">
+                <h3>Cesta Palha Trançada</h3>
+                <p>R$95,99</p>
+            </div>
+            <div class="card">
+                <img src="imagens/2.png">
+                <h3>Cesta Ursinho</h3>
+                <p>R$109,90</p>
+            </div>
+            <div class="card">
+                <img src="imagens/3.webp">
+                <h3>Felicidade e saúde</h3>
+                <p>R$129,99</p>
+            </div>
+            <div class="card">
+                <img src="imagens/13.webp" alt="Cesta Nestle">
+                <h3>Cesta Nestle</h3>
+                <p>R$79,60</p>
+            </div>
+            <div class="card">
+                <img src="imagens/8.png" alt="Cesta Rústica">
+                <h3>Cesta Rústica</h3>
+                <p>R$97,90</p>
+            </div>
+            <div class="card">
+                <img src="imagens/10.png" alt="Cesta Típica">
+                <h3>Cesta Típica</h3>
+                <p>R$106,45</p>
+            </div>
+            <div class="card">
+                <img src="imagens/11.webp" alt="Cesta Elegante">
+                <h3>Cesta Elegante</h3>
+                <p>R$146,60</p>
+            </div>
+            <div class="card">
+                <img src="imagens/6.jpg" alt="Cesta Especial">
+                <h3>Cesta Especial</h3>
+                <p>R$87,90</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

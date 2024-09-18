@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Flower & Flavor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e5e5e5;
+        }
+
+        .container {
+            width: 800px;
+            height: 500px;
+            display: flex;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .lado_logo {
+            width: 35%;
+            height: 500px;
+            background-color: #D0B8E8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 30px;
+        }
+
+        .lado_logo img {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 25px;
+        }
+
+        .lado_forms {
+            width: 75%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+        }
+
+        .lado_forms form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: center; 
+        }
+        h1
+        {
+            margin-bottom: 10%;
+        }
+        p{
+            margin-bottom: 5%;
+        }
+
+        .lado_forms form input {
+            width: 75%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            margin-bottom: 5%;
+        }
+
+        .lado_forms form button {
+            padding: 10px;
+            width: 200px;
+            font-size: 16px;
+            background-color: #737db1;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 5%;
+        }
+        .a
+        {
+            font-size: 8px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lado_logo">
+            <img src="imagens/logo.png">
+            <img src="imagens/cesta_desenho.png" >
+        </div>
+        <div class="lado_forms">
+            <h1>LOGIN</h1>
+            <p>Que bom te ver aqui!</p>
+            <form action="vitrine.html">
+                <input type="text" placeholder="Nome" required>
+                <input type="password" placeholder="Senha" required>
+                <button type="submit">ENTRAR</button>
+                <a href="cadastro.html">Cadastre-se</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

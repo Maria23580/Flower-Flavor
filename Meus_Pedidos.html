@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8ff;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: #efe6f7;
+
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #efe6f7;
+    }
+
+    header {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-left: 20px;
+    }
+
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: #6d3f6c;
+    }
+
+    .order-list {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        overflow-y: auto;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e6d4f7;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+    }
+
+    .order-info {
+        text-align: left;
+    }
+
+    .photo-container {
+        margin-right: 20px;
+    }
+
+    .photo {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .calendar-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    #date-input {
+        padding: 10px;
+        width: 250px;
+        border: 1px solid #d6a7d7;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #f9f2f6;
+        color: #6d3f6c;
+    }
+
+    #calendar {
+        display: none;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: #ffffff;
+        border: 1px solid #d6a7d7;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        z-index: 1000;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #e8d4eb;
+        border-bottom: 1px solid #d6a7d7;
+        font-weight: bold;
+        color: #6d3f6c;
+    }
+
+    .calendar-days, .calendar-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .calendar-days div {
+        font-weight: bold;
+        color: #6d3f6c;
+        background-color: #e8d4eb;
+        font-size: 12px;
+    }
+
+    .calendar-body div {
+        padding: 10px;
+        background-color: #f9f2f6;
+        color: #6d3f6c;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .calendar-body div:hover {
+        background-color: #d6a7d7;
+        color: white;
+    }
+
+    .calendar-body div.selected {
+        background-color: #6d3f6c;
+        color: white;
+    }
+
+    .calendar-body div.disabled {
+        color: #ccc;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between; /* Mantém a imagem e o campo de data nas extremidades */
+        align-items: center; /* Alinha a imagem, texto e data verticalmente */
+        background-color: #e6d4f7;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+    }
+    
+    .photo-container {
+        display: flex;
+        flex-shrink: 0;
+    }
+    #titulo{
+        text-align: center;
+    }
+    
+    .order-info {
+        text-align: left;
+        margin-left: 20px; /* Espaçamento entre a foto e a descrição */
+        flex-grow: 1; /* Faz a descrição ocupar o espaço disponível */
+    }
+    
+    .calendar-container {
+        margin-left: 20px; /* Garante que o calendário fique com espaço adequado */
+    }
+    
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendars = document.querySelectorAll('.calendar-container');
+
+        calendars.forEach(container => {
+            const dateInput = container.querySelector('#date-input');
+            const calendar = container.querySelector('#calendar');
+            const monthYear = container.querySelector('#month-year');
+            const calendarBody = container.querySelector('#calendar-body');
+            const prevButton = container.querySelector('#prev-month');
+            const nextButton = container.querySelector('#next-month');
+
+            let selectedDate = new Date();
+            let currentMonth = selectedDate.getMonth();
+            let currentYear = selectedDate.getFullYear();
+
+            function updateCalendar() {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+                let days = '';
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    days += '<div class="disabled"></div>';
+                }
+
+                for (let i = 1; i <= lastDay.getDate(); i++) {
+                    days += `<div>${i}</div>`;
+                }
+
+                calendarBody.innerHTML = days;
+                monthYear.textContent = `${selectedDate.toLocaleString('pt-BR', { month: 'long' })} ${currentYear}`;
+            }
+
+            function toggleCalendar() {
+                calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
+            }
+
+            function selectDate(e) {
+                if (e.target.tagName === 'DIV' && !e.target.classList.contains('disabled')) {
+                    const day = e.target.textContent;
+                    selectedDate.setDate(day);
+                    dateInput.value = selectedDate.toLocaleDateString('pt-BR');
+                    calendar.style.display = 'none';
+                }
+            }
+
+            function changeMonth(direction) {
+                if (direction === 'prev') {
+                    currentMonth--;
+                    if (currentMonth < 0) {
+                        currentMonth = 11;
+                        currentYear--;
+                    }
+                } else if (direction === 'next') {
+                    currentMonth++;
+                    if (currentMonth > 11) {
+                        currentMonth = 0;
+                        currentYear++;
+                    }
+                }
+                selectedDate = new Date(currentYear, currentMonth, 1);
+                updateCalendar();
+            }
+
+            dateInput.addEventListener('click', toggleCalendar);
+            calendarBody.addEventListener('click', selectDate);
+            prevButton.addEventListener('click', () => changeMonth('prev'));
+            nextButton.addEventListener('click', () => changeMonth('next'));
+
+            updateCalendar();
+        });
+    });
+</script>
+
+<body>
+    <div class="container">
+        <header>
+            <button class="back-arrow" onclick="window.history.back();">&#9664; Voltar</button>
+            <h2 id="titulo">Meus Pedidos</h2>
+        </header>
+        <section class="order-list">
+            <div class="order-item">
+                <div class="photo-container">
+                    <img src="imagens/1.jpg" alt="Foto da Compra 1" class="photo">
+                </div>
+                <div class="order-info">
+                    <h3>Cesta Palha Trançada</h3>
+                    <h3>R$95.99</h3>
+                </div>
+                <div class="calendar-container">
+                    <input type="text" id="date-input" placeholder="Selecione uma data" readonly>
+                    <div id="calendar" class="calendar">
+                        <div class="calendar-header">
+                            <button id="prev-month">&#9664;</button>
+                            <span id="month-year"></span>
+                            <button id="next-month">&#9654;</button>
+                        </div>
+                        <div class="calendar-days">
+                            <div>Dom</div>
+                            <div>Seg</div>
+                            <div>Ter</div>
+                            <div>Qua</div>
+                            <div>Qui</div>
+                            <div>Sex</div>
+                            <div>Sab</div>
+                        </div>
+                        <div id="calendar-body" class="calendar-body"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-item">
+                <div class="photo-container">
+                    <img src="imagens/13.webp" alt="Foto da Compra 2" class="photo">
+                </div>
+                <div class="order-info">
+                    <h3>Cesta Nestle</h3>
+                    <h3>R$79.60</h3>
+                </div>
+                <div class="calendar-container">
+                    <input type="text" id="date-input" placeholder="Selecione uma data" readonly>
+                    <div id="calendar" class="calendar">
+                        <div class="calendar-header">
+                            <button id="prev-month">&#9664;</button>
+                            <span id="month-year"></span>
+                            <button id="next-month">&#9654;</button>
+                        </div>
+                        <div class="calendar-days">
+                            <div>Dom</div>
+                            <div>Seg</div>
+                            <div>Ter</div>
+                            <div>Qua</div>
+                            <div>Qui</div>
+                            <div>Sex</div>
+                            <div>Sab</div>
+                        </div>
+                        <div id="calendar-body" class="calendar-body"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-item">
+                <div class="photo-container">
+                    <img src="imagens/11.webp" alt="Foto da Compra 3" class="photo">
+                </div>
+                <div class="order-info">
+                    <h3>Cesta Elegante</h3>
+                    <h3>R$146.60</h3>
+                </div>
+                <div class="calendar-container">
+                    <input type="text" id="date-input" placeholder="Selecione uma data" readonly>
+                    <div id="calendar" class="calendar">
+                        <div class="calendar-header">
+                            <button id="prev-month">&#9664;</button>
+                            <span id="month-year"></span>
+                            <button id="next-month">&#9654;</button>
+                        </div>
+                        <div class="calendar-days">
+                            <div>Dom</div>
+                            <div>Seg</div>
+                            <div>Ter</div>
+                            <div>Qua</div>
+                            <div>Qui</div>
+                            <div>Sex</div>
+                            <div>Sab</div>
+                        </div>
+                        <div id="calendar-body" class="calendar-body"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
